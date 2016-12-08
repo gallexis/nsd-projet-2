@@ -1,5 +1,5 @@
 from utils import *
-
+from random import*
 def adjacency_matrix_from_graph(graph):
     nodes = get_nodes_from_graph(graph)
     matrix = {}
@@ -74,8 +74,38 @@ def calcul_positives_negatives(file_res,number_links,number_iteration):
     false_positive=number_iteration - true_positive
     false_negative=number_links - true_positive
 
-def implementation(file_test,file_res,number_iteration,number_links,number_node):
+def implementation(file_res,loaded_graph,number_iteration,number_links,number_node):
+    checked_links={}
+    verify=True
+    current_iteration=1
 
+    number_possible_links= number_node * (number_node - 1) / 2
+    if number_iteration > number_possible_links:
+        number_iteration=number_possible_links
+
+    while current_iteration < number_iteration:
+        while verify:
+            node1=randint(0,number_node-1)
+            node2=randint(0,number_node-1)
+            minim=min(node1,node2)
+            maxim=max(node1,node2)
+            while node1==node2:
+                node2=randint(0,number_node-1)
+
+            if minim in checked_links.keys():
+                neighbors = checked_links[minim]
+                if maxim not in neighbors:
+                    verify=False
+                    checked_links[minim]=maxim
+            else:
+                verify=False
+                checked_links[minim] = maxim
+
+        if node1 in loaded_graph.keys():
+            if node2 in loaded_graph[node1]:
+                write_line(file_res,current_iteration,node1,node2)
+
+        current_iteration+=1
 
 
 def main():
