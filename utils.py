@@ -54,3 +54,11 @@ def delete_loop(loadedGraph):
 
 def get_max_degree_nodes(loadedGraph):
     return len( max(loadedGraph.values()) )
+
+def nodes_degrees(loadedGraph):
+    nodesDegrees = []
+
+    for node in loadedGraph:
+        nodesDegrees.append( (node,len(loadedGraph[node])) )
+
+    return list(reversed(sorted(nodesDegrees, key=lambda tup: tup[1])))

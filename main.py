@@ -68,12 +68,12 @@ def calculate_recall(true_positives, false_negatives):
 
 def calculate_fScore(precision, recall):
     return 2*(precision*recall)/(precision+recall)
-
+"""
 def calcul_positives_negatives(file_res,number_links,number_iteration):
     true_positive=number of lines in file_res
     false_positive=number_iteration - true_positive
     false_negative=number_links - true_positive
-
+"""
 def implementation(file_res,loaded_graph,number_iteration,number_links,number_node):
     checked_links={}
     verify=True
@@ -115,6 +115,8 @@ def main():
     graph= file.read().splitlines()
     g_original = load_graph(graph)
     delete_loop(g_original)
+
+    print(nodes_degrees(g_original))
 
     #print(g_original)
 
