@@ -49,6 +49,33 @@ def analyse_random(n,m,t):
         print("toto")
         return (m*(m+1)/2)*rounds + (t-1*rounds-m*rounds)*m
 
+def absolute_efficiency(file_res,t):
+    number_link=0
+    for line in file_res:
+        print(line)
+
+def get_normalized_efficiency(worst_efficiency,best_efficiency,absolute_efficiency):
+    return (absolute_efficiency - worst_efficiency) / (best_efficiency - worst_efficiency)
+
+def get_relative_efficiency(random_efficiency,absolute_efficiency, worst_efficiency, best_efficiency):
+    return get_normalized_efficiency(worst_efficiency,best_efficiency,absolute_efficiency)/get_normalized_efficiency(worst_efficiency,best_efficiency,random_efficiency)
+
+def calculate_precision(true_positives,false_positives):
+    return true_positives/(true_positives + false_positives)
+
+def calculate_recall(true_positives, false_negatives):
+    return true_positives/(true_positives + false_negatives)
+
+def calculate_fScore(precision, recall):
+    return 2*(precision*recall)/(precision+recall)
+
+def calcul_positives_negatives(file_res,number_links,number_iteration):
+    true_positive=number of lines in file_res
+    false_positive=number_iteration - true_positive
+    false_negative=number_links - true_positive
+
+def implementation(file_test,file_res,number_iteration,number_links,number_node):
+
 
 
 def main():
@@ -72,11 +99,11 @@ def main():
         write_line(file_res,test_num,node1,node2)
 
 
-    print(link_exists(node1,node2,g_original))
-    print(sample)
+    #print(link_exists(node1,node2,g_original))
+    #print(sample)
 
-    print(analyse_random(3,3,50))
-
+    #print(analyse_random(3,3,50))
+    absolute_efficiency(file_res,3)
 
 
 
