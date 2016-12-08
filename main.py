@@ -78,6 +78,7 @@ def implementation(file_res,loaded_graph,number_iteration,number_node):
     checked_links={}
     verify=True
     current_iteration=1
+    neighbors=set()
     #print(number_node)
     number_possible_links= number_node * (number_node - 1) / 2
     if number_iteration > number_possible_links:
@@ -88,25 +89,26 @@ def implementation(file_res,loaded_graph,number_iteration,number_node):
         while verify:
             node1=randint(0,number_node-1)
             node2=randint(0,number_node-1)
-            minim=min(node1,node2)
-            maxim=max(node1,node2)
             while node1==node2:
                 node2=randint(0,number_node-1)
+            minim=min(node1,node2)
+            maxim=max(node1,node2)
 
             if minim in checked_links.keys():
-
                 neighbors = checked_links[minim]
                 if maxim not in neighbors:
                     verify=False
-
-                    checked_links[minim]=maxim
+                    neighbors.add(maxim)
+                    checked_links[minim]=neighbors
             else:
                 verify=False
-                checked_links[minim] = maxim
-                print(checked_links)
+                new=set()
+                new.add(maxim)
+                checked_links[minim] = new
+        print(loaded_graph.keys())
 
-        print(str(str(node1) + "  " + str(node2)))
-        if node1 in loaded_graph.keys():
+
+        if str(node1) in loaded_graph.keys():
             if node2 in loaded_graph[node1]:
                 write_line(file_res,current_iteration,node1,node2)
 
