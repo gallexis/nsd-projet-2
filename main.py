@@ -108,6 +108,30 @@ def implementation(file_res,loaded_graph,number_iteration,number_links,number_no
         current_iteration+=1
 
 
+def nodes_degrees(loadedGraph):
+    nodesDegrees = []
+
+    for node in loadedGraph:
+        nodesDegrees.append( (node,len(loadedGraph[node])) )
+
+    return list(reversed(sorted(nodesDegrees, key=lambda tup: tup[1])))
+
+
+def ordering_links(loadedGraph):
+    nodes = {}
+
+    for node in loadedGraph:
+        for neighbors in loadedGraph[node]:
+            nodes[(node,neighbors)] = len(loadedGraph[node]) + len(loadedGraph[neighbors])
+
+    array_nodes= []
+    for (n1, n2) in nodes:
+        array_nodes.append((n1,n2,nodes[(n1, n2)]))
+
+    return list(reversed(sorted(array_nodes, key=lambda tup: tup[2])))
+
+
+
 def main():
 
     file = open("Flickr-test", "r+")
@@ -117,7 +141,7 @@ def main():
     delete_loop(g_original)
 
     print(nodes_degrees(g_original))
-
+    print(ordering_links(g_original))
     #print(g_original)
 
     sample = adjacency_matrix_from_graph(g_original)
