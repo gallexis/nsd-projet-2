@@ -74,6 +74,17 @@ def calcul_positives_negatives(file_res,number_links,number_iteration):
     false_positive=number_iteration - true_positive
     false_negative=number_links - true_positive
 
+def test_untested_links(node,untested_nodes,loaded_graph,test_number):
+    keys = []
+    [keys.append(int(x)) for x in loaded_graph.keys()]
+    for element in untested_nodes:
+        test_number+=1
+        if node in keys:
+            if str(element) in loaded_graph[str(node)]:
+                write_line(file_res, current_iteration, node1, node2)
+
+
+
 def implementation(file_res,loaded_graph,number_iteration,number_node):
     checked_links={}
     verify=True
@@ -122,6 +133,8 @@ def main():
     file_res = open("File_res", "w")
     graph= file.read().splitlines()
     g_original = load_graph(graph)
+    all_nodes=set()
+    all_nodes=get_nodes_from_graph(g_original)
     delete_loop(g_original)
     number_nodes=size_of_graph(g_original)
 
