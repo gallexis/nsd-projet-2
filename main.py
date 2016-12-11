@@ -20,7 +20,7 @@ def add_link(node1,node2,simul):
     simul[node2].append(node1)
 
 def write_line(file,test_number,node1,node2):
-    file.write(str(test_number) + ' ' + str(node1+" "+node2+"\n"))
+    file.write(str(test_number) + ' ' + str(str(node1)+" "+str(node2)+"\n"))
 
 
 def analyse_best(n,m,t):
@@ -105,11 +105,12 @@ def implementation(file_res,loaded_graph,number_iteration,number_node):
                 new=set()
                 new.add(maxim)
                 checked_links[minim] = new
-        print(loaded_graph.keys())
 
+        keys = []
+        [keys.append(int(x)) for x in loaded_graph.keys()]
 
-        if str(node1) in loaded_graph.keys():
-            if node2 in loaded_graph[node1]:
+        if node1 in keys:
+            if str(node2) in loaded_graph[str(node1)]:
                 write_line(file_res,current_iteration,node1,node2)
 
         current_iteration+=1
@@ -117,14 +118,14 @@ def implementation(file_res,loaded_graph,number_iteration,number_node):
 
 def main():
 
-    file = open("test", "r+")
-    file_res = open("File_res", "a")
+    file = open("Flickr-test", "r+")
+    file_res = open("File_res", "w")
     graph= file.read().splitlines()
     g_original = load_graph(graph)
     delete_loop(g_original)
     number_nodes=size_of_graph(g_original)
 
-    implementation(file_res,g_original,7,number_nodes)
+    implementation(file_res,g_original,100000,number_nodes)
 
     #print(g_original)
 
