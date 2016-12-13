@@ -20,7 +20,7 @@ def add_link(node1,node2,simul):
     simul[node2].append(node1)
 
 def write_line(file,test_number,node1,node2):
-    file.write(str(test_number) + ' ' + str(node1+" "+node2+"\n"))
+    file.write(str(test_number) + ' ' + str(str(node1)+" "+str(node2)+"\n"))
 
 
 def analyse_best(n,m,t):
@@ -51,8 +51,8 @@ def analyse_random(n,m,t):
 
 def absolute_efficiency(file_res,t):
     number_link=0
-    for line in file_res:
-        print(line)
+   # for line in file_res:
+   #     print(line)
 
 def get_normalized_efficiency(worst_efficiency,best_efficiency,absolute_efficiency):
     return (absolute_efficiency - worst_efficiency) / (best_efficiency - worst_efficiency)
@@ -68,91 +68,89 @@ def calculate_recall(true_positives, false_negatives):
 
 def calculate_fScore(precision, recall):
     return 2*(precision*recall)/(precision+recall)
-"""
+
 def calcul_positives_negatives(file_res,number_links,number_iteration):
-    true_positive=number of lines in file_res
+    true_positive=0#number of lines in file_res
     false_positive=number_iteration - true_positive
     false_negative=number_links - true_positive
-"""
-def implementation(file_res,loaded_graph,number_iteration,number_links,number_node):
+
+def test_untested_links(node,untested_nodes,loaded_graph,test_number):
+    keys = []
+    [keys.append(int(x)) for x in loaded_graph.keys()]
+    for element in untested_nodes:
+        test_number+=1
+        if node in keys:
+            if str(element) in loaded_graph[str(node)]:
+                write_line(file_res, current_iteration, node1, node2)
+
+
+
+def implementation(file_res,loaded_graph,number_iteration,number_node):
     checked_links={}
     verify=True
     current_iteration=1
-
+    neighbors=set()
+    #print(number_node)
     number_possible_links= number_node * (number_node - 1) / 2
     if number_iteration > number_possible_links:
         number_iteration=number_possible_links
 
     while current_iteration < number_iteration:
+        verify = True
         while verify:
             node1=randint(0,number_node-1)
             node2=randint(0,number_node-1)
-            minim=min(node1,node2)
-            maxim=max(node1,node2)
             while node1==node2:
                 node2=randint(0,number_node-1)
+            minim=min(node1,node2)
+            maxim=max(node1,node2)
 
             if minim in checked_links.keys():
                 neighbors = checked_links[minim]
                 if maxim not in neighbors:
                     verify=False
-                    checked_links[minim]=maxim
+                    neighbors.add(maxim)
+                    checked_links[minim]=neighbors
             else:
                 verify=False
-                checked_links[minim] = maxim
+                new=set()
+                new.add(maxim)
+                checked_links[minim] = new
 
-        if node1 in loaded_graph.keys():
-            if node2 in loaded_graph[node1]:
+        keys = []
+        [keys.append(int(x)) for x in loaded_graph.keys()]
+
+        if node1 in keys:
+            if str(node2) in loaded_graph[str(node1)]:
                 write_line(file_res,current_iteration,node1,node2)
 
         current_iteration+=1
 
 
-def nodes_degrees(loadedGraph):
-    nodesDegrees = []
-
-    for node in loadedGraph:
-        nodesDegrees.append( (node,len(loadedGraph[node])) )
-
-    return list(reversed(sorted(nodesDegrees, key=lambda tup: tup[1])))
-
-
-def ordering_links(loadedGraph):
-    nodes = {}
-
-    for node in loadedGraph:
-        for neighbors in loadedGraph[node]:
-            nodes[(node,neighbors)] = len(loadedGraph[node]) + len(loadedGraph[neighbors])
-
-    array_nodes= []
-    for (n1, n2) in nodes:
-        array_nodes.append((n1,n2,nodes[(n1, n2)]))
-
-    return list(reversed(sorted(array_nodes, key=lambda tup: tup[2])))
-
-
-
 def main():
 
     file = open("Flickr-test", "r+")
-    file_res = open("File_res", "a")
+    file_res = open("File_res", "w")
     graph= file.read().splitlines()
     g_original = load_graph(graph)
+    all_nodes=set()
+    all_nodes=get_nodes_from_graph(g_original)
     delete_loop(g_original)
+    number_nodes=size_of_graph(g_original)
 
-    print(nodes_degrees(g_original))
-    print(ordering_links(g_original))
+    implementation(file_res,g_original,100000,number_nodes)
+
     #print(g_original)
 
-    sample = adjacency_matrix_from_graph(g_original)
-    node1="118"
-    node2="6"
-    test_num=2
-
-    if link_exists(node1,node2,g_original):
-        add_link(node1,node2,sample)
-        write_line(file_res,test_num,node1,node2)
-        write_line(file_res,test_num,node1,node2)
+    # sample = adjacency_matrix_from_graph(g_original)
+    # node1="118"
+    # node2="6"
+    # test_num=2
+    #
+    # if link_exists(node1,node2,g_original):
+    #     add_link(node1,node2,sample)
+    #     write_line(file_res,test_num,node1,node2)
+    #     write_line(file_res,test_num,node1,node2)
 
 
     #print(link_exists(node1,node2,g_original))
