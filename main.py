@@ -1,26 +1,6 @@
-from utils import *
 from random import*
-def adjacency_matrix_from_graph(graph):
-    nodes = get_nodes_from_graph(graph)
-    matrix = {}
 
-    for node in nodes:
-        matrix[node] = []
-
-    return matrix
-
-
-def link_exists(node1,node2,graph):
-    nodes = graph[node1]
-
-    return node2 in nodes
-
-def add_link(node1,node2,simul):
-    simul[node1].append(node2)
-    simul[node2].append(node1)
-
-def write_line(file,test_number,node1,node2):
-    file.write(str(test_number) + ' ' + str(str(node1)+" "+str(node2)+"\n"))
+from utils import *
 
 
 def analyse_best(n,m,t):
@@ -83,13 +63,9 @@ def test_untested_links(node,untested_nodes,loaded_graph,test_number):
             if str(element) in loaded_graph[str(node)]:
                 write_line(file_res, current_iteration, node1, node2)
 
-
-
 def implementation(file_res,loaded_graph,number_iteration,number_node):
     checked_links={}
-    verify=True
     current_iteration=1
-    neighbors=set()
     #print(number_node)
     number_possible_links= number_node * (number_node - 1) / 2
     if number_iteration > number_possible_links:
@@ -133,36 +109,13 @@ def main():
     file_res = open("File_res", "w")
     graph= file.read().splitlines()
     g_original = load_graph(graph)
-    all_nodes=set()
-    all_nodes=get_nodes_from_graph(g_original)
+
     delete_loop(g_original)
     number_nodes=size_of_graph(g_original)
 
     implementation(file_res,g_original,100000,number_nodes)
 
-    #print(g_original)
-
-    # sample = adjacency_matrix_from_graph(g_original)
-    # node1="118"
-    # node2="6"
-    # test_num=2
-    #
-    # if link_exists(node1,node2,g_original):
-    #     add_link(node1,node2,sample)
-    #     write_line(file_res,test_num,node1,node2)
-    #     write_line(file_res,test_num,node1,node2)
-
-
-    #print(link_exists(node1,node2,g_original))
-    #print(sample)
-
-    #print(analyse_random(3,3,50))
-
-
     absolute_efficiency(file_res,3)
-
-
-
 
 
 

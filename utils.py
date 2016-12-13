@@ -55,3 +55,27 @@ def delete_loop(loadedGraph):
 def get_max_degree_nodes(loadedGraph):
     return len( max(loadedGraph.values()) )
 
+
+########
+def empty_adjacency_matrix_from_graph(graph):
+    nodes = get_nodes_from_graph(graph)
+    matrix = {}
+
+    for node in nodes:
+        matrix[node] = []
+
+    return matrix
+
+
+def link_exists(node1, node2, graph):
+    nodes = graph[node1]
+    return node2 in nodes
+
+
+def add_link(node1, node2, simul):
+    simul[node1].append(node2)
+    simul[node2].append(node1)
+
+
+def write_line(file, test_number, node1, node2):
+    file.write(str(test_number) + ' ' + str(str(node1) + " " + str(node2) + "\n"))
