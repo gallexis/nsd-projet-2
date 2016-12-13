@@ -63,7 +63,8 @@ def test_untested_links(node,untested_nodes,loaded_graph,test_number):
             if str(element) in loaded_graph[str(node)]:
                 write_line(file_res, current_iteration, node1, node2)
 
-def implementation(file_res,loaded_graph,number_iteration,number_node):
+
+def implementation(file_res, file_fail, loaded_graph, number_iteration, number_node):
     checked_links={}
     current_iteration=1
     #print(number_node)
@@ -76,8 +77,10 @@ def implementation(file_res,loaded_graph,number_iteration,number_node):
         while verify:
             node1=randint(0,number_node-1)
             node2=randint(0,number_node-1)
+
             while node1==node2:
                 node2=randint(0,number_node-1)
+
             minim=min(node1,node2)
             maxim=max(node1,node2)
 
@@ -99,6 +102,8 @@ def implementation(file_res,loaded_graph,number_iteration,number_node):
         if node1 in keys:
             if str(node2) in loaded_graph[str(node1)]:
                 write_line(file_res,current_iteration,node1,node2)
+            else:
+                write_line(file_fail, current_iteration, node1, node2)
 
         current_iteration+=1
 
@@ -106,16 +111,33 @@ def implementation(file_res,loaded_graph,number_iteration,number_node):
 def main():
 
     file = open("Flickr-test", "r+")
-    file_res = open("File_res", "w")
     graph= file.read().splitlines()
     g_original = load_graph(graph)
 
     delete_loop(g_original)
     number_nodes=size_of_graph(g_original)
 
-    implementation(file_res,g_original,100000,number_nodes)
+    file_res = open("File_res", "w")
+    file_fail = open("File_fail", "w")
+
+    implementation(file_res, file_fail, g_original, 100000, number_nodes)
 
     absolute_efficiency(file_res,3)
+
+    # 10: complete strategy
+    file_res.close()
+    file_fail.close()
+
+    file_res = open("File_res", "r+")
+    graph = file_res.read().splitlines()
+    file_res_g = load_graph(graph, with_t=True)
+
+    file_fail = open("File_fail", "r+")
+    graph = file_fail.read().splitlines()
+    file_fail_g = load_graph(graph, with_t=True)
+
+    average_degree_distrib = nodes_degrees(file_res_g)
+
 
 
 

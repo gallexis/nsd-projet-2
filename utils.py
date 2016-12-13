@@ -15,19 +15,27 @@ def size_of_graph(graph):
     nodes = get_nodes_from_graph(graph)
     return len(nodes)
 
-def load_graph(graph):
+
+def load_graph(graph, with_t=False):
     nodes = {}
 
     for edge in graph:
+        if with_t:
+            col1 = 1
+            col2 = 2
+        else:
+            col1 = 0
+            col2 = 1
+
         ns = get_nodes_from_edge(edge)
-        n0 = ns[0]
+        n0 = ns[col1]
 
         # if node's degree == 0, empty list
         if len(ns) == 1:
             nodes[n0] = set()
 
         else:
-            n1 = ns[1]
+            n1 = ns[col2]
             # if nodes already in dict, append his new neighbour
             if n0 in nodes:
                 nodes[n0].add(n1)
@@ -102,3 +110,13 @@ def ordering_links(loadedGraph):
         array_nodes.append((n1, n2, nodes[(n1, n2)]))
 
     return list(reversed(sorted(array_nodes, key=lambda tup: tup[2])))
+
+
+if __name__ == '__main__':
+    file = open("a", "r+")
+    graph = file.read().splitlines()
+    g_original = load_graph(graph, with_t=True)
+
+    delete_loop(g_original)
+    number_nodes = size_of_graph(g_original)
+    print(nodes_degrees(g_original))
