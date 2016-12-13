@@ -79,3 +79,26 @@ def add_link(node1, node2, simul):
 
 def write_line(file, test_number, node1, node2):
     file.write(str(test_number) + ' ' + str(str(node1) + " " + str(node2) + "\n"))
+
+
+def nodes_degrees(loadedGraph):
+    nodesDegrees = []
+
+    for node in loadedGraph:
+        nodesDegrees.append((node, len(loadedGraph[node])))
+
+    return list(reversed(sorted(nodesDegrees, key=lambda tup: tup[1])))
+
+
+def ordering_links(loadedGraph):
+    nodes = {}
+
+    for node in loadedGraph:
+        for neighbors in loadedGraph[node]:
+            nodes[(node, neighbors)] = len(loadedGraph[node]) + len(loadedGraph[neighbors])
+
+    array_nodes = []
+    for (n1, n2) in nodes:
+        array_nodes.append((n1, n2, nodes[(n1, n2)]))
+
+    return list(reversed(sorted(array_nodes, key=lambda tup: tup[2])))
