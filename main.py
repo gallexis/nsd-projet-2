@@ -83,12 +83,9 @@ def complete_strategy(exist_link,unexist_link,average_degree_exist,current_itera
 def test_untested_links(node,untested_nodes,loaded_graph,test_number,file_res):
     keys = []
     [keys.append(int(x)) for x in loaded_graph.keys()]
-    print(node)
     for element in untested_nodes:
         test_number+=1
-        print(element)
         if str(element) in loaded_graph[str(node)]:
-            print(element)
             write_line(file_res, test_number, node, element)
 
     return test_number
