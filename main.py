@@ -54,14 +54,44 @@ def calcul_positives_negatives(file_res,number_links,number_iteration):
     false_positive=number_iteration - true_positive
     false_negative=number_links - true_positive
 
-def test_untested_links(node,untested_nodes,loaded_graph,test_number):
+
+def complete_strategy(exist_link,unexist_link,average_degree_exist,current_iteration,number_node,loaded_graph,File_res):
+    comp=0
+    keys = set()
+    [keys.add(str(x)) for x in loaded_graph.keys()]
+
+    while(comp < number_node):
+        node=average_degree_exist[comp]
+        node=node[0]
+
+        node_exist_link=set()
+        node_unexist_link=set()
+        if node in exist_link.keys():
+            node_exist_link=exist_link[node]
+        if node in unexist_link.keys():
+            node_unexist_link=unexist_link[node]
+
+        node_test_link=set.union(node_unexist_link,node_exist_link)
+
+        node_untest_link= set(keys).symmetric_difference(set(node_test_link))
+
+        nbre=test_untested_links(node,node_untest_link,loaded_graph,current_iteration,File_res)
+        current_iteration+=nbre
+        comp+=1
+
+
+def test_untested_links(node,untested_nodes,loaded_graph,test_number,file_res):
     keys = []
     [keys.append(int(x)) for x in loaded_graph.keys()]
+    print(node)
     for element in untested_nodes:
         test_number+=1
-        if node in keys:
-            if str(element) in loaded_graph[str(node)]:
-                write_line(file_res, current_iteration, node1, node2)
+        print(element)
+        if str(element) in loaded_graph[str(node)]:
+            print(element)
+            write_line(file_res, test_number, node, element)
+
+    return test_number
 
 
 def implementation(file_res, file_fail, loaded_graph, number_iteration, number_node):
@@ -106,11 +136,12 @@ def implementation(file_res, file_fail, loaded_graph, number_iteration, number_n
                 write_line(file_fail, current_iteration, node1, node2)
 
         current_iteration+=1
+    return current_iteration
 
 
 def main():
 
-    file = open("Flickr-test", "r+")
+    file = open("test", "r+")
     graph= file.read().splitlines()
     g_original = load_graph(graph)
 
@@ -120,13 +151,14 @@ def main():
     file_res = open("File_res", "w")
     file_fail = open("File_fail", "w")
 
-    implementation(file_res, file_fail, g_original, 100000, number_nodes)
+    current_iteration=implementation(file_res, file_fail, g_original, 10, number_nodes)
 
-    absolute_efficiency(file_res,3)
+    #absolute_efficiency(file_res,3)
 
     # 10: complete strategy
     file_res.close()
     file_fail.close()
+
 
     file_res = open("File_res", "r+")
     graph = file_res.read().splitlines()
@@ -137,6 +169,10 @@ def main():
     file_fail_g = load_graph(graph, with_t=True)
 
     average_degree_distrib = nodes_degrees(file_res_g)
+    print(file_res_g)
+    print(file_fail_g)
+    print(average_degree_distrib)
+    complete_strategy(file_res_g,file_fail_g,average_degree_distrib,current_iteration,1,g_original,file_res)
 
 
 
