@@ -2,6 +2,8 @@ from random import*
 
 from utils import *
 
+file_res_name = "File_res"
+file_fail_name = "File_fail"
 
 def analyse_best(n,m,t):
     if t <= m:
@@ -54,25 +56,27 @@ def get_normalized_efficiency(worst_efficiency,best_efficiency,absolute_efficien
 def get_relative_efficiency(random_efficiency,absolute_efficiency, worst_efficiency, best_efficiency):
     return get_normalized_efficiency(worst_efficiency,best_efficiency,absolute_efficiency)/get_normalized_efficiency(worst_efficiency,best_efficiency,random_efficiency)
 
-def calculate_precision(file_res,number_iteration):
-    true_positives=number_lines(file_res)
+#file_res is the name of the file,
+def calculate_precision(number_iteration):
+    true_positives=number_lines(file_res_name)
     return true_positives/number_iteration
 
-def calculate_recall(file_res, initial_file):
-    return number_lines(file_res)/number_lines(initial_file)
+def calculate_recall( initial_file):
+    return number_lines(file_res_name)/number_lines(initial_file)
 
-def calculate_fScore(file_res,initial_file,number_iteration):
-    precision=calculate_precision(file_res,number_iteration)
-    recall=calculate_recall(file_res,initial_file)
+def calculate_fScore(initial_file,number_iteration):
+    precision=calculate_precision(file_res_name,number_iteration)
+    recall=calculate_recall(file_res_name,initial_file)
     return 2*(precision*recall)/(precision+recall)
 
-def calcul_positives_negatives(file_res,number_links,number_iteration):
-    true_positive=number_lines(file_res)
+def calcul_positives_negatives(number_links,number_iteration):
+    true_positive=number_lines(file_res_name)
     false_positive=number_iteration - true_positive
     false_negative=number_links - true_positive
 
-def number_lines(file):
-    return sum(1 for _ in file)
+def number_lines(file_name):
+    my_file1 = open(file_name, "r")
+    return sum(1 for _ in my_file1)
 
 def complete_strategy(exist_link,unexist_link,average_degree_exist,current_iteration,number_node,loaded_graph,File_res):
     comp=0
@@ -221,9 +225,9 @@ def main():
     delete_loop(g_original)
     number_nodes=size_of_graph(g_original)
 
-    file_res = open("File_res", "w")
-    file_fail = open("File_fail", "w")
 
+    file_res = open(file_res_name, "w")
+    file_fail = open(file_fail_name, "w")
     current_iteration=Random_strategy(file_res, file_fail, g_original, 1000000, number_nodes)
 
     #absolute_efficiency(file_res,3)
