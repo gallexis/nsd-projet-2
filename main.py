@@ -228,12 +228,12 @@ def main():
 
     file_res = open(file_res_name, "w")
     file_fail = open(file_fail_name, "w")
-    current_iteration=Random_strategy(file_res, file_fail, g_original, 1000000, number_nodes)
+    number_test=1000000
+    current_iteration=Random_strategy(file_res, file_fail, g_original, number_test, number_nodes)
 
     #absolute_efficiency(file_res,3)
 
     # 10: complete strategy
-    """
     file_res.close()
     file_fail.close()
 
@@ -253,8 +253,7 @@ def main():
     couple_average_degree_distrib= max_degree_node_somme(average_degree_distrib,0)
     #complete_strategy(file_res_g,file_fail_g,average_degree_distrib,current_iteration,1,g_original,file_res)
     TBF_strategy(file_res_g, file_fail_g, couple_average_degree_distrib, current_iteration, 0, g_original, file_res)
-    ###
-    """
+
 
 
 
