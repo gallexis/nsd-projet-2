@@ -97,6 +97,15 @@ def nodes_degrees(loadedGraph):
 
     return list(reversed(sorted(nodesDegrees, key=lambda tup: tup[1])))
 
+def nodes_degrees_superior_toZero(loadedGraph):
+    nodesDegrees = []
+
+    for node in loadedGraph:
+        if len(loadedGraph[node]) > 0:
+            nodesDegrees.append((node, len(loadedGraph[node])))
+
+    return list(reversed(sorted(nodesDegrees, key=lambda tup: tup[1])))
+
 
 def ordering_links(loadedGraph):
     nodes = {}

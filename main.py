@@ -26,13 +26,27 @@ def analyse_random(n,m,t):
     if t > rounds*number_of_rounds:
         return (number_of_rounds*(number_of_rounds-1)/2)*rounds + number_of_rounds*(t-rounds*number_of_rounds)
     else:
-        print("toto")
         return (m*(m+1)/2)*rounds + (t-1*rounds-m*rounds)*m
 
-def absolute_efficiency(file_res,t):
-    number_link=0
-   # for line in file_res:
-   #     print(line)
+def absolute_efficiency(file_res_name):
+    number_link = 0
+    my_file=open(file_res_name,"r")
+    my_file1 = open(file_res_name, "r")
+    number_lines=sum(1 for _ in my_file1)
+    total=0
+    for line in  reversed(list(my_file)):
+        line_split=line.split(" ")
+        if number_link==0:
+            previous=int(line_split[0])
+            total+=number_lines
+        else:
+            current=int(line_split[0])
+            total+=((previous-current)*number_lines)
+            previous=current
+        #previous=line_split[]
+        number_lines-=1
+        number_link+=1
+    return total
 
 def get_normalized_efficiency(worst_efficiency,best_efficiency,absolute_efficiency):
     return (absolute_efficiency - worst_efficiency) / (best_efficiency - worst_efficiency)
@@ -40,20 +54,25 @@ def get_normalized_efficiency(worst_efficiency,best_efficiency,absolute_efficien
 def get_relative_efficiency(random_efficiency,absolute_efficiency, worst_efficiency, best_efficiency):
     return get_normalized_efficiency(worst_efficiency,best_efficiency,absolute_efficiency)/get_normalized_efficiency(worst_efficiency,best_efficiency,random_efficiency)
 
-def calculate_precision(true_positives,false_positives):
-    return true_positives/(true_positives + false_positives)
+def calculate_precision(file_res,number_iteration):
+    true_positives=number_lines(file_res)
+    return true_positives/number_iteration
 
-def calculate_recall(true_positives, false_negatives):
-    return true_positives/(true_positives + false_negatives)
+def calculate_recall(file_res, initial_file):
+    return number_lines(file_res)/number_lines(initial_file)
 
-def calculate_fScore(precision, recall):
+def calculate_fScore(file_res,initial_file,number_iteration):
+    precision=calculate_precision(file_res,number_iteration)
+    recall=calculate_recall(file_res,initial_file)
     return 2*(precision*recall)/(precision+recall)
 
 def calcul_positives_negatives(file_res,number_links,number_iteration):
-    true_positive=0#number of lines in file_res
+    true_positive=number_lines(file_res)
     false_positive=number_iteration - true_positive
     false_negative=number_links - true_positive
 
+def number_lines(file):
+    return sum(1 for _ in file)
 
 def complete_strategy(exist_link,unexist_link,average_degree_exist,current_iteration,number_node,loaded_graph,File_res):
     comp=0
@@ -79,6 +98,63 @@ def complete_strategy(exist_link,unexist_link,average_degree_exist,current_itera
         current_iteration+=nbre
         comp+=1
 
+def TBF_strategy(exist_link,unexist_link,couple_average_degree_exist,current_iteration,number_node,loaded_graph,File_res):
+    comp=0
+    keys = set()
+    [keys.add(str(x)) for x in loaded_graph.keys()]
+    #print(couple_average_degree_exist)
+    if number_node > len(couple_average_degree_exist) or number_node == 0:
+        number_node=len(couple_average_degree_exist)
+
+    while(comp < number_node):
+        node=couple_average_degree_exist[comp]
+        node=node[0]
+        #print(node)
+        node1=node[0]
+        node2=node[1]
+
+        node_exist_link=set()
+        node_unexist_link=set()
+        #print(node1)
+        if node1 in exist_link.keys():
+            node_exist_link=exist_link[node1]
+        if node1 in unexist_link.keys():
+            node_unexist_link=unexist_link[node1]
+
+        node_test_link=set.union(node_unexist_link,node_exist_link)
+
+        if node2 not in node_test_link:
+            node_untest_link= []
+            node_untest_link.append(node2)
+            #print(node_untest_link)
+            nbre=test_untested_links(node1,node_untest_link,loaded_graph,current_iteration,File_res)
+            print(current_iteration)
+            current_iteration=nbre
+        comp+=1
+
+def max_degree_node_somme(average_degree_exist,number_node):
+    comp=0
+    sum_node_degree=[]
+    if number_node > len(average_degree_exist) or number_node==0:
+        number_node=len(average_degree_exist)
+
+    while comp < number_node:
+        line = average_degree_exist[comp]
+        node1=line[0]
+        degree = line[1]
+        compte=comp+1
+        while compte < number_node:
+            line2 = average_degree_exist[compte]
+            degree2 = line2[1]
+            node2=line2[0]
+            nodes=[]
+            sum=degree+degree2
+            nodes.append((node1,node2))
+            sum_node_degree.append(((node1,node2), sum))
+            compte+=1
+        comp+=1
+
+    return list(reversed(sorted(sum_node_degree, key=lambda tup: tup[1])))
 
 def test_untested_links(node,untested_nodes,loaded_graph,test_number,file_res):
     keys = []
@@ -91,7 +167,7 @@ def test_untested_links(node,untested_nodes,loaded_graph,test_number,file_res):
     return test_number
 
 
-def implementation(file_res, file_fail, loaded_graph, number_iteration, number_node):
+def Random_strategy(file_res, file_fail, loaded_graph, number_iteration, number_node):
     checked_links={}
     current_iteration=1
     #print(number_node)
@@ -138,7 +214,7 @@ def implementation(file_res, file_fail, loaded_graph, number_iteration, number_n
 
 def main():
 
-    file = open("test", "r+")
+    file = open("Flickr", "r+")
     graph= file.read().splitlines()
     g_original = load_graph(graph)
 
@@ -148,11 +224,12 @@ def main():
     file_res = open("File_res", "w")
     file_fail = open("File_fail", "w")
 
-    current_iteration=implementation(file_res, file_fail, g_original, 10, number_nodes)
+    current_iteration=Random_strategy(file_res, file_fail, g_original, 1000000, number_nodes)
 
     #absolute_efficiency(file_res,3)
 
     # 10: complete strategy
+    """
     file_res.close()
     file_fail.close()
 
@@ -166,12 +243,14 @@ def main():
     file_fail_g = load_graph(graph, with_t=True)
 
     average_degree_distrib = nodes_degrees(file_res_g)
-    print(file_res_g)
-    print(file_fail_g)
-    print(average_degree_distrib)
-    complete_strategy(file_res_g,file_fail_g,average_degree_distrib,current_iteration,1,g_original,file_res)
-
-
+    #print(average_degree_distrib)
+    #print(file_res_g)
+    #print(file_fail_g)
+    couple_average_degree_distrib= max_degree_node_somme(average_degree_distrib,0)
+    #complete_strategy(file_res_g,file_fail_g,average_degree_distrib,current_iteration,1,g_original,file_res)
+    TBF_strategy(file_res_g, file_fail_g, couple_average_degree_distrib, current_iteration, 0, g_original, file_res)
+    ###
+    """
 
 
 
