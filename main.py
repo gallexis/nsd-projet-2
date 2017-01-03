@@ -83,6 +83,9 @@ def complete_strategy(exist_link,unexist_link,average_degree_exist,current_itera
     keys = set()
     [keys.add(str(x)) for x in loaded_graph.keys()]
 
+    if number_node > len(average_degree_exist) or number_node == 0:
+        number_node = len(average_degree_exist)
+
     while(comp < number_node):
         node=average_degree_exist[comp]
         node=node[0]
@@ -174,12 +177,13 @@ def test_untested_links(node,untested_nodes,loaded_graph,test_number,file_res):
 def Random_strategy(file_res, file_fail, loaded_graph, number_iteration, number_node):
     checked_links={}
     current_iteration=1
-    #print(number_node)
+
     number_possible_links= number_node * (number_node - 1) / 2
     if number_iteration > number_possible_links:
         number_iteration=number_possible_links
 
     while current_iteration < number_iteration:
+        print(current_iteration)
         verify = True
         while verify:
             node1=randint(0,number_node-1)
@@ -232,7 +236,7 @@ def main():
     current_iteration=Random_strategy(file_res, file_fail, g_original, number_test, number_nodes)
 
     #absolute_efficiency(file_res,3)
-
+    """
     # 10: complete strategy
     file_res.close()
     file_fail.close()
@@ -253,7 +257,7 @@ def main():
     couple_average_degree_distrib= max_degree_node_somme(average_degree_distrib,0)
     #complete_strategy(file_res_g,file_fail_g,average_degree_distrib,current_iteration,1,g_original,file_res)
     TBF_strategy(file_res_g, file_fail_g, couple_average_degree_distrib, current_iteration, 0, g_original, file_res)
-
+    """
 
 
 
