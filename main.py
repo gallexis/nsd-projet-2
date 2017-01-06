@@ -332,7 +332,7 @@ def run_mixed_complete_tbf_strategy(graph_file, iteration1, iteration2):
 
 
 if __name__ == '__main__':
-    print("Args: ", sys.argv[1])
+    print("Args: ", sys.argv)
 
     if len(sys.argv) <= 1:
         print("please enter an argument")

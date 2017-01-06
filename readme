@@ -1,11 +1,7 @@
-main.py
-utils.py
-
-
 Exemples of how to run the program:
-(Always give 5 arguments)
+(Always give 4 arguments)
 
-python main.py [name of the graph file] [strategy used] [number of iteration] [number of iteration (can be 0)]
+python main.py [name of the graph file] [strategy used] [number of iterations] [number of iterations (can be 0)]
 
     Random Strategy:
         python main.py graph_file.txt random 500000 0
