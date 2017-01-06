@@ -1,3 +1,4 @@
+import sys
 from random import*
 
 from utils import *
@@ -105,6 +106,8 @@ def complete_strategy(exist_link,unexist_link,average_degree_exist,current_itera
         current_iteration+=nbre
         comp+=1
 
+    return current_iteration
+
 def TBF_strategy(exist_link,unexist_link,couple_average_degree_exist,current_iteration,number_node,loaded_graph,File_res):
     comp=0
 
@@ -136,6 +139,8 @@ def TBF_strategy(exist_link,unexist_link,couple_average_degree_exist,current_ite
             #print(current_iteration)
             current_iteration=nbre
         comp+=1
+
+    return current_iteration
 
 def max_degree_node_somme(average_degree_exist,number_node):
     comp=0
@@ -218,7 +223,7 @@ def Random_strategy(file_res, file_fail, loaded_graph, number_iteration, number_
     return current_iteration
 
 
-def main():
+def main(arg):
 
     file = open("Flickr", "r+")
     graph= file.read().splitlines()
@@ -255,10 +260,147 @@ def main():
     couple_average_degree_distrib= max_degree_node_somme(average_degree_distrib,0)
     #complete_strategy(file_res_g,file_fail_g,average_degree_distrib,current_iteration,1,g_original,file_res)
     TBF_strategy(file_res_g, file_fail_g, couple_average_degree_distrib, current_iteration, 100000, g_original, file_res)
-    """
-    """
 
+
+# -------------
+
+def getGraph(file):
+    file = open(graph_file, "r+")
+    graph = file.read().splitlines()
+    return load_graph(graph)
+
+
+def prepare_strategy(file_res, file_fail):
+    # 10: complete strategy
+    file_res.close()
+    file_fail.close()
+
+    file_res = open("File_res", "r+")
+    graph = file_res.read().splitlines()
+    file_res_g = load_graph(graph, with_t=True)
+
+    file_fail = open("File_fail", "r+")
+    graph = file_fail.read().splitlines()
+    file_fail_g = load_graph(graph, with_t=True)
+
+    return file_res_g, file_fail_g
+
+
+"""
+    Implementation of the strategies
+"""
+
+
+def run_random_strategy(graph_file, iteration1, iteration2):
+    g_original = getGraph(graph_file)
+
+    delete_loop(g_original)
+    number_nodes = size_of_graph(g_original)
+
+    file_res = open(file_res_name, "w")
+    file_fail = open(file_fail_name, "w")
+    number_test = 50000
+    Random_strategy(file_res, file_fail, g_original, number_test, number_nodes)
+
+
+def run_complete_strategy(graph_file, iteration1, iteration2):
+    g_original = getGraph(graph_file)
+
+    delete_loop(g_original)
+    number_nodes = size_of_graph(g_original)
+
+    file_res = open(file_res_name, "w")
+    file_fail = open(file_fail_name, "w")
+    number_test = iteration1
+    current_iteration = Random_strategy(file_res, file_fail, g_original, number_test, number_nodes)
+
+    file_res_g, file_fail_g = prepare_strategy(file_res, file_fail)
+
+    average_degree_distrib = nodes_degrees(file_res_g)
+
+    return complete_strategy(file_res_g, file_fail_g, average_degree_distrib, current_iteration, iteration2, g_original,
+                             file_res)
+
+
+def run_tbf_strategy(graph_file, iteration1, iteration2):
+    g_original = getGraph(graph_file)
+
+    delete_loop(g_original)
+    number_nodes = size_of_graph(g_original)
+
+    file_res = open(file_res_name, "w")
+    file_fail = open(file_fail_name, "w")
+    number_test = iteration1
+    current_iteration = Random_strategy(file_res, file_fail, g_original, number_test, number_nodes)
+
+    file_res_g, file_fail_g = prepare_strategy(file_res, file_fail)
+
+    average_degree_distrib = nodes_degrees(file_res_g)
+    couple_average_degree_distrib = max_degree_node_somme(average_degree_distrib, 0)
+
+    return TBF_strategy(file_res_g, file_fail_g, couple_average_degree_distrib, current_iteration, iteration2,
+                        g_original,
+                        file_res)
+
+
+def run_mixed_tbf_complete_strategy(graph_file, iteration1, iteration2):
+    current_iteration = run_complete_strategy(graph_file, iteration1, iteration2)
+
+    file_res = open(file_res_name, "w")
+    file_fail = open(file_fail_name, "w")
+
+    file_res_g, file_fail_g = prepare_strategy(file_res, file_fail)
+
+    average_degree_distrib = nodes_degrees(file_res_g)
+    couple_average_degree_distrib = max_degree_node_somme(average_degree_distrib, 0)
+
+    TBF_strategy(file_res_g, file_fail_g, couple_average_degree_distrib, current_iteration, iteration2, g_original,
+                 file_res)
+
+
+def run_mixed_complete_tbf_strategy(graph_file, iteration1, iteration2):
+    current_iteration = run_tbf_strategy(graph_file, iteration1, iteration2)
+
+    file_res = open(file_res_name, "w")
+    file_fail = open(file_fail_name, "w")
+
+    file_res_g, file_fail_g = prepare_strategy(file_res, file_fail)
+    average_degree_distrib = nodes_degrees(file_res_g)
+
+    complete_strategy(file_res_g, file_fail_g, average_degree_distrib, current_iteration, iteration2, g_original,
+                      file_res)
 
 
 if __name__ == '__main__':
-    main()
+    print(sys.argv[1])
+
+    if len(sys.argv) <= 1:
+        print("please enter an argument")
+
+
+    elif len(sys.argv) == 5:
+        graph_file = sys.argv[1]
+        strategy = sys.argv[2]
+        iteration1 = int(sys.argv[3])
+        iteration2 = int(sys.argv[4])
+
+        if strategy == "random":
+            run_random_strategy(graph_file, iteration1, iteration2)
+
+        elif strategy == "complete":
+            run_complete_strategy(graph_file, iteration1, iteration2)
+
+        elif strategy == "tbf":
+            run_tbf_strategy(graph_file, iteration1, iteration2)
+
+        elif strategy == "mixed_tbf_complete":
+            run_mixed_tbf_complete_strategy(graph_file, iteration1, iteration2)
+
+        elif strategy == "mixed_complete_tbf":
+            run_mixed_complete_tbf_strategy(graph_file, iteration1, iteration2)
+
+        else:
+            print("erreur")
+
+    else:
+        print("erreur number of args")

@@ -1,0 +1,23 @@
+main.py
+utils.py
+
+
+Exemples of how to run the program:
+(Always give 5 arguments)
+
+python main.py [name of the graph file] [strategy used] [number of iteration] [number of iteration (can be 0)]
+
+    Random Strategy:
+        python main.py graph_file.txt random 500000 0
+
+    Complete Strategy:
+        python main.py graph_file.txt complete 500000 100
+
+    TBF Strategy:
+        python main.py graph_file.txt tbf 500000 10000
+
+    Mixed Strategy (TBF then Complete):
+        python main.py graph_file.txt mixed_tbf_complete 500000 10000
+
+    Mixed Strategy (Complete then TBF):
+        python main.py graph_file.txt mixed_complete_tbf 500000 10000

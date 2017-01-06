@@ -128,4 +128,4 @@ if __name__ == '__main__':
 
     delete_loop(g_original)
     number_nodes = size_of_graph(g_original)
-    print(nodes_degrees(g_original))
+    print(ordering_links(g_original))
