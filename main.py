@@ -20,7 +20,7 @@ def analyse_worst(n,m,t):
         return  (rest*(rest+1))/2
 
 def analyse_random(n,m,t):
-    density=0.1# m / (((n-1)*n) /2)
+    density=m / (((n-1)*n) /2)
 
     rounds = 1 / density
     number_of_rounds = int(t/rounds)
@@ -107,9 +107,7 @@ def complete_strategy(exist_link,unexist_link,average_degree_exist,current_itera
 
 def TBF_strategy(exist_link,unexist_link,couple_average_degree_exist,current_iteration,number_node,loaded_graph,File_res):
     comp=0
-    keys = set()
-    [keys.add(str(x)) for x in loaded_graph.keys()]
-    #print(couple_average_degree_exist)
+
     if number_node > len(couple_average_degree_exist) or number_node == 0:
         number_node=len(couple_average_degree_exist)
 
@@ -135,7 +133,7 @@ def TBF_strategy(exist_link,unexist_link,couple_average_degree_exist,current_ite
             node_untest_link.append(node2)
             #print(node_untest_link)
             nbre=test_untested_links(node1,node_untest_link,loaded_graph,current_iteration,File_res)
-            print(current_iteration)
+            #print(current_iteration)
             current_iteration=nbre
         comp+=1
 
@@ -183,7 +181,7 @@ def Random_strategy(file_res, file_fail, loaded_graph, number_iteration, number_
         number_iteration=number_possible_links
 
     while current_iteration < number_iteration:
-        print(current_iteration)
+        #print(current_iteration)
         verify = True
         while verify:
             node1=randint(0,number_node-1)
@@ -232,11 +230,11 @@ def main():
 
     file_res = open(file_res_name, "w")
     file_fail = open(file_fail_name, "w")
-    number_test=1000000
+    number_test=50000
     current_iteration=Random_strategy(file_res, file_fail, g_original, number_test, number_nodes)
 
     #absolute_efficiency(file_res,3)
-    """
+
     # 10: complete strategy
     file_res.close()
     file_fail.close()
@@ -256,7 +254,8 @@ def main():
     #print(file_fail_g)
     couple_average_degree_distrib= max_degree_node_somme(average_degree_distrib,0)
     #complete_strategy(file_res_g,file_fail_g,average_degree_distrib,current_iteration,1,g_original,file_res)
-    TBF_strategy(file_res_g, file_fail_g, couple_average_degree_distrib, current_iteration, 0, g_original, file_res)
+    TBF_strategy(file_res_g, file_fail_g, couple_average_degree_distrib, current_iteration, 100000, g_original, file_res)
+    """
     """
 
 
